@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-# Gathers munin statistics and submits them to Riemann.
+# Gathers net statistics and submits them to Riemann.
 
 require File.expand_path('../../lib/riemann/tools', __FILE__)
 
 class Riemann::Tools::Net
   include Riemann::Tools
-  
+
   opt :interfaces, "Interfaces to monitor", :type => :strings, :default => nil
   opt :ignore_interfaces, "Interfaces to ignore", :type => :strings, :default =>['lo']
 
@@ -45,7 +45,7 @@ class Riemann::Tools::Net
           s[service] = value
         end
       end
-      
+
       s
     end
 
@@ -62,7 +62,7 @@ class Riemann::Tools::Net
 
     state
   end
-  
+
   def tick
     state = self.state
 
@@ -97,5 +97,5 @@ class Riemann::Tools::Net
     @old_state = state
   end
 end
-  
+
 Riemann::Tools::Net.run
