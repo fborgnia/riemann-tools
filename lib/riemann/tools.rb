@@ -36,6 +36,9 @@ module Riemann
         opt :attribute, "Attribute to add to the event", :type => String, :multi => true
         opt :timeout, "Timeout (in seconds) when waiting for acknowledgements", :default => 30
         opt :tcp, "Use TCP transport instead of UDP (improves reliability, slight overhead.", :default => true
+        opt :daemon, "Run in background", :default => false
+        opt :logfile, "logfile path", :type => String, :default => '/tmp/riemann-tools.log'
+        opt :pidfile, "pidfile path", :type => String, :default => '/tmp/riemann-tools.pid'
       end
     end
 
@@ -65,7 +68,7 @@ module Riemann
       if options[:event_host]
         event[:host] = options[:event_host].dup
       end
-      
+
       event = event.merge(attributes)
 
       begin
@@ -95,6 +98,7 @@ module Riemann
     alias :r :riemann
 
     def run
+      daemonize if options[:daemon]
       t0 = Time.now
       loop do
         begin
@@ -108,7 +112,21 @@ module Riemann
       end
     end
 
+    def daemonize
+      exit if fork
+      Process.setsid
+      $0 = self.class.name.downcase.gsub('::','_')
+      $stdout.reopen(opts[:logfile], 'w')
+      $stdout.sync = true
+      $stderr.reopen($stdout)
+      exit if fork
+      f = File.new(opts[:pidfile], 'w')
+      f.write Process.pid
+      f.close
+    end
+
     def tick
     end
+
   end
 end
