@@ -11,7 +11,7 @@ ENV['COPYFILE_DISABLE'] = 'true'
 gemspec = Gem::Specification.new do |s|
   s.rubyforge_project = 'riemann-tools'
 
-  s.name = 'riemann-tools'
+  s.name = 'riemann-tools-fb'
   s.version = '0.3.0'
   s.author = 'Fede Borgnia'
   s.email = 'fborgnia@gmail.com'
